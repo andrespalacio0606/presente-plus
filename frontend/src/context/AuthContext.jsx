@@ -4,10 +4,10 @@ import api from '../services/api';
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [usuario = null;
-  const [token = null;
-  const [loading = true;
-  const [rol = null;
+const [usuario, setUsuario] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [rol, setRol] = useState(null);
 
   // Cargar sesión guardada al iniciar
   useEffect(() => {
