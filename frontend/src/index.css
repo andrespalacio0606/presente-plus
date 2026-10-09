@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/* 1. Paleta de colores personalizada del Paso 3.1 */
+@theme {
+  --color-presente-50: #f0fdf4;
+  --color-presente-500: #22c55e;
+  --color-presente-600: #16a34a;
+
+  --color-ausente-500: #ef4444;
+  --color-ausente-600: #dc2626;
+
+  --color-alerta-500: #f59e0b;
+  --color-alerta-600: #d97706;
+}
+
+/* 2. Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  @apply bg-slate-900 text-white;
+}
+
+/* 3. Clases de componentes del Paso 3.2 */
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition;
+  }
+
+  .btn-success {
+    @apply px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-medium transition;
+  }
+
+  .btn-danger {
+    @apply px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition;
+  }
+
+  .input-base {
+    @apply w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-white;
+  }
+
+  .card {
+    @apply bg-slate-800 rounded-lg p-4 border border-slate-700;
+  }
+}
