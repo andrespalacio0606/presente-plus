@@ -1,122 +1,122 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext, AuthProvider } from './context/AuthContext';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Importar componentes
+import Login from './components/Auth/Login';
+import Register from './components/Auth/Register';
+import Dashboard from './components/Dashboard/Dashboard';
+import MainLayout from './components/Layout/MainLayout';
+import ParticipantesList from './components/Participantes/ParticipantesList';
+import GruposList from './components/Grupos/GruposList';
+import TomarAsistencia from './components/Asistencia/TomarAsistencia';
+import AlertasList from './components/Alertas/AlertasList';
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+// Componente de ruta protegida
+function RutaProtegida({ children }) {
+  const { estaAutenticado, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-slate-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="text-white mt-4">Cargando...</p>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </div>
+    );
+  }
 
-      <div className="ticks"></div>
+  if (!estaAutenticado) {
+    return <Navigate to="/login" replace />;
+  }
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  return children;
 }
 
-export default App
+function AppRoutes() {
+  const { estaAutenticado } = useContext(AuthContext);
+
+  return (
+    <Routes>
+      {/* Rutas de autenticación */}
+      <Route 
+        path="/login" 
+        element={estaAutenticado ? <Navigate to="/dashboard" /> : <Login />} 
+      />
+      <Route 
+        path="/register" 
+        element={estaAutenticado ? <Navigate to="/dashboard" /> : <Register />} 
+      />
+
+      {/* Rutas protegidas */}
+      <Route
+        path="/dashboard"
+        element={
+          <RutaProtegida>
+            <MainLayout>
+              <Dashboard />
+            </MainLayout>
+          </RutaProtegida>
+        }
+      />
+
+      <Route
+        path="/participantes"
+        element={
+          <RutaProtegida>
+            <MainLayout>
+              <ParticipantesList />
+            </MainLayout>
+          </RutaProtegida>
+        }
+      />
+
+      <Route
+        path="/grupos"
+        element={
+          <RutaProtegida>
+            <MainLayout>
+              <GruposList />
+            </MainLayout>
+          </RutaProtegida>
+        }
+      />
+
+      <Route
+        path="/asistencia"
+        element={
+          <RutaProtegida>
+            <MainLayout>
+              <TomarAsistencia />
+            </MainLayout>
+          </RutaProtegida>
+        }
+      />
+
+      <Route
+        path="/alertas"
+        element={
+          <RutaProtegida>
+            <MainLayout>
+              <AlertasList />
+            </MainLayout>
+          </RutaProtegida>
+        }
+      />
+
+      {/* Ruta por defecto */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
