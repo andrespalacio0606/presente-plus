@@ -72,14 +72,6 @@ export default function ParticipantesList() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       {/* Encabezado */}
@@ -107,13 +99,13 @@ export default function ParticipantesList() {
 
       {/* Filtros */}
       <div className="card space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Búsqueda */}
           <div className="relative">
-            <Search className="absolute left-3 top-3 text-slate-400" size={20} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
             <input
               type="text"
-              placeholder="Buscar por nombre o DNI..."
+              placeholder="Buscar por nombre..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               className="input-base pl-10"
@@ -147,7 +139,15 @@ export default function ParticipantesList() {
             </tr>
           </thead>
           <tbody>
-            {participantes.length === 0 ? (
+            {loading ? (
+              <tr>
+                <td colSpan="5" className="py-8">
+                  <div className="flex justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  </div>
+                </td>
+              </tr>
+            ) : participantes.length === 0 ? (
               <tr>
                 <td colSpan="5" className="text-center py-8 text-slate-400">
                   No hay participantes para mostrar
@@ -157,10 +157,7 @@ export default function ParticipantesList() {
               participantes.map(p => (
                 <tr key={p.id} className="border-b border-slate-700 hover:bg-slate-700/50">
                   <td className="px-4 py-3">
-                    <div>
-                      <p className="font-medium text-white">{p.nombre} {p.apellido}</p>
-                      <p className="text-xs text-slate-400">{p.dni}</p>
-                    </div>
+                    <p className="font-medium text-white">{p.nombre} {p.apellido}</p>
                   </td>
                   <td className="px-4 py-3 text-slate-300">{p.dni}</td>
                   <td className="px-4 py-3">
@@ -190,7 +187,8 @@ export default function ParticipantesList() {
                       <span className="text-slate-500">Sin grupos</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right space-x-2 flex justify-end">
+                  <td className="px-4 py-3">
+                    <div className="flex justify-end gap-1">
                     <button
                       className="p-2 hover:bg-slate-600 rounded text-blue-400"
                       title="Ver detalles"
@@ -210,6 +208,7 @@ export default function ParticipantesList() {
                     >
                       <Trash2 size={18} />
                     </button>
+                    </div>
                   </td>
                 </tr>
               ))
