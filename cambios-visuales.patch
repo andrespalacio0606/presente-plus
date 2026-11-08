@@ -1,0 +1,803 @@
+From 1b3556e91ef31cdb69f78f9b0498d000b0038bc8 Mon Sep 17 00:00:00 2001
+From: Claude <claude@example.com>
+Date: Sat, 7 Nov 2026 16:49:48 +0000
+Subject: [PATCH] Arreglos visuales: reset CSS, layout, dashboard,
+ participantes, asistencia
+
+---
+ backend/.gitignore                            |   3 +
+ frontend/index.html                           |   4 +-
+ frontend/src/App.css                          | 184 ------------------
+ .../src/components/Alertas/AlertasList.jsx    |   6 +-
+ .../components/Asistencia/TomarAsistencia.jsx |  50 +++--
+ .../src/components/Dashboard/Dashboard.jsx    |  77 ++++----
+ frontend/src/components/Grupos/GruposList.jsx |  13 +-
+ frontend/src/components/Layout/MainLayout.jsx |  69 ++++---
+ .../Participantes/ParticipantesList.jsx       |  33 ++--
+ frontend/src/index.css                        |  10 +-
+ 10 files changed, 162 insertions(+), 287 deletions(-)
+ create mode 100644 backend/.gitignore
+ delete mode 100644 frontend/src/App.css
+
+diff --git a/backend/.gitignore b/backend/.gitignore
+new file mode 100644
+index 0000000..b6cf5f0
+--- /dev/null
++++ b/backend/.gitignore
+@@ -0,0 +1,3 @@
++__pycache__/
++*.pyc
++.env
+diff --git a/frontend/index.html b/frontend/index.html
+index f94d687..88c9af5 100644
+--- a/frontend/index.html
++++ b/frontend/index.html
+@@ -1,10 +1,10 @@
+ <!doctype html>
+-<html lang="en">
++<html lang="es">
+   <head>
+     <meta charset="UTF-8" />
+     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-    <title>frontend</title>
++    <title>Presente+</title>
+   </head>
+   <body>
+     <div id="root"></div>
+diff --git a/frontend/src/App.css b/frontend/src/App.css
+deleted file mode 100644
+index f90339d..0000000
+--- a/frontend/src/App.css
++++ /dev/null
+@@ -1,184 +0,0 @@
+-.counter {
+-  font-size: 16px;
+-  padding: 5px 10px;
+-  border-radius: 5px;
+-  color: var(--accent);
+-  background: var(--accent-bg);
+-  border: 2px solid transparent;
+-  transition: border-color 0.3s;
+-  margin-bottom: 24px;
+-
+-  &:hover {
+-    border-color: var(--accent-border);
+-  }
+-  &:focus-visible {
+-    outline: 2px solid var(--accent);
+-    outline-offset: 2px;
+-  }
+-}
+-
+-.hero {
+-  position: relative;
+-
+-  .base,
+-  .framework,
+-  .vite {
+-    inset-inline: 0;
+-    margin: 0 auto;
+-  }
+-
+-  .base {
+-    width: 170px;
+-    position: relative;
+-    z-index: 0;
+-  }
+-
+-  .framework,
+-  .vite {
+-    position: absolute;
+-  }
+-
+-  .framework {
+-    z-index: 1;
+-    top: 34px;
+-    height: 28px;
+-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
+-      scale(1.4);
+-  }
+-
+-  .vite {
+-    z-index: 0;
+-    top: 107px;
+-    height: 26px;
+-    width: auto;
+-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
+-      scale(0.8);
+-  }
+-}
+-
+-#center {
+-  display: flex;
+-  flex-direction: column;
+-  gap: 25px;
+-  place-content: center;
+-  place-items: center;
+-  flex-grow: 1;
+-
+-  @media (max-width: 1024px) {
+-    padding: 32px 20px 24px;
+-    gap: 18px;
+-  }
+-}
+-
+-#next-steps {
+-  display: flex;
+-  border-top: 1px solid var(--border);
+-  text-align: left;
+-
+-  & > div {
+-    flex: 1 1 0;
+-    padding: 32px;
+-    @media (max-width: 1024px) {
+-      padding: 24px 20px;
+-    }
+-  }
+-
+-  .icon {
+-    margin-bottom: 16px;
+-    width: 22px;
+-    height: 22px;
+-  }
+-
+-  @media (max-width: 1024px) {
+-    flex-direction: column;
+-    text-align: center;
+-  }
+-}
+-
+-#docs {
+-  border-right: 1px solid var(--border);
+-
+-  @media (max-width: 1024px) {
+-    border-right: none;
+-    border-bottom: 1px solid var(--border);
+-  }
+-}
+-
+-#next-steps ul {
+-  list-style: none;
+-  padding: 0;
+-  display: flex;
+-  gap: 8px;
+-  margin: 32px 0 0;
+-
+-  .logo {
+-    height: 18px;
+-  }
+-
+-  a {
+-    color: var(--text-h);
+-    font-size: 16px;
+-    border-radius: 6px;
+-    background: var(--social-bg);
+-    display: flex;
+-    padding: 6px 12px;
+-    align-items: center;
+-    gap: 8px;
+-    text-decoration: none;
+-    transition: box-shadow 0.3s;
+-
+-    &:hover {
+-      box-shadow: var(--shadow);
+-    }
+-    .button-icon {
+-      height: 18px;
+-      width: 18px;
+-    }
+-  }
+-
+-  @media (max-width: 1024px) {
+-    margin-top: 20px;
+-    flex-wrap: wrap;
+-    justify-content: center;
+-
+-    li {
+-      flex: 1 1 calc(50% - 8px);
+-    }
+-
+-    a {
+-      width: 100%;
+-      justify-content: center;
+-      box-sizing: border-box;
+-    }
+-  }
+-}
+-
+-#spacer {
+-  height: 88px;
+-  border-top: 1px solid var(--border);
+-  @media (max-width: 1024px) {
+-    height: 48px;
+-  }
+-}
+-
+-.ticks {
+-  position: relative;
+-  width: 100%;
+-
+-  &::before,
+-  &::after {
+-    content: '';
+-    position: absolute;
+-    top: -4.5px;
+-    border: 5px solid transparent;
+-  }
+-
+-  &::before {
+-    left: 0;
+-    border-left-color: var(--border);
+-  }
+-  &::after {
+-    right: 0;
+-    border-right-color: var(--border);
+-  }
+-}
+diff --git a/frontend/src/components/Alertas/AlertasList.jsx b/frontend/src/components/Alertas/AlertasList.jsx
+index 7e8b4b6..696261e 100644
+--- a/frontend/src/components/Alertas/AlertasList.jsx
++++ b/frontend/src/components/Alertas/AlertasList.jsx
+@@ -24,7 +24,11 @@ export default function AlertasList() {
+   };
+ 
+   if (loading) {
+-    return <div className="text-white">Cargando alertas...</div>;
++    return (
++      <div className="flex items-center justify-center h-full">
++        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
++      </div>
++    );
+   }
+ 
+   return (
+diff --git a/frontend/src/components/Asistencia/TomarAsistencia.jsx b/frontend/src/components/Asistencia/TomarAsistencia.jsx
+index 953c64f..118fb4b 100644
+--- a/frontend/src/components/Asistencia/TomarAsistencia.jsx
++++ b/frontend/src/components/Asistencia/TomarAsistencia.jsx
+@@ -8,6 +8,7 @@ export default function TomarAsistencia() {
+   const [participantes, setParticipantes] = useState([]);
+   const [asistencias, setAsistencias] = useState({});
+   const [loading, setLoading] = useState(false);
++  const [mensaje, setMensaje] = useState(null);
+ 
+   const cargarGrupos = async () => {
+     try {
+@@ -36,6 +37,7 @@ export default function TomarAsistencia() {
+   const handleGuardar = async () => {
+     try {
+       setLoading(true);
++      setMensaje(null);
+       const asistenciasArray = Object.entries(asistencias).map(([participanteId, estado]) => ({
+         participante_id: parseInt(participanteId),
+         estado
+@@ -47,9 +49,9 @@ export default function TomarAsistencia() {
+         asistencias: asistenciasArray
+       });
+ 
+-      alert('Asistencias guardadas exitosamente');
++      setMensaje({ tipo: 'ok', texto: 'Asistencias guardadas exitosamente' });
+     } catch (err) {
+-      alert('Error al guardar asistencias');
++      setMensaje({ tipo: 'error', texto: 'Error al guardar asistencias' });
+       console.error(err);
+     } finally {
+       setLoading(false);
+@@ -95,8 +97,15 @@ export default function TomarAsistencia() {
+ 
+       {grupoSeleccionado && participantes.length > 0 && (
+         <div className="card space-y-4">
+-          <h3 className="text-lg font-bold text-white mb-4">
+-            Participantes - {participantes.length} presentes
++          <h3 className="text-lg font-bold text-white">
++            Participantes
++            <span className="text-slate-400 font-normal text-sm ml-2">
++              {Object.values(asistencias).filter(e => e === 'Presente').length} presentes
++              {' · '}
++              {Object.values(asistencias).filter(e => e === 'Ausente').length} ausentes
++              {' · '}
++              {Object.values(asistencias).filter(e => e === 'Tarde').length} tarde
++            </span>
+           </h3>
+ 
+           <div className="space-y-2 max-h-96 overflow-y-auto">
+@@ -106,39 +115,54 @@ export default function TomarAsistencia() {
+                 <div className="flex gap-2">
+                   <button
+                     onClick={() => setAsistencias({ ...asistencias, [p.id]: 'Presente' })}
+-                    className={`p-2 rounded ${
++                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm transition ${
+                       asistencias[p.id] === 'Presente'
+                         ? 'bg-green-900/50 text-green-400'
+-                        : 'bg-slate-600 text-slate-400'
++                        : 'bg-slate-600 text-slate-400 hover:bg-slate-500'
+                     }`}
+                   >
+-                    <CheckCircle size={18} />
++                    <CheckCircle size={16} />
++                    <span className="hidden sm:inline">Presente</span>
+                   </button>
+                   <button
+                     onClick={() => setAsistencias({ ...asistencias, [p.id]: 'Ausente' })}
+-                    className={`p-2 rounded ${
++                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm transition ${
+                       asistencias[p.id] === 'Ausente'
+                         ? 'bg-red-900/50 text-red-400'
+-                        : 'bg-slate-600 text-slate-400'
++                        : 'bg-slate-600 text-slate-400 hover:bg-slate-500'
+                     }`}
+                   >
+-                    <XCircle size={18} />
++                    <XCircle size={16} />
++                    <span className="hidden sm:inline">Ausente</span>
+                   </button>
+                   <button
+                     onClick={() => setAsistencias({ ...asistencias, [p.id]: 'Tarde' })}
+-                    className={`p-2 rounded ${
++                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm transition ${
+                       asistencias[p.id] === 'Tarde'
+                         ? 'bg-amber-900/50 text-amber-400'
+-                        : 'bg-slate-600 text-slate-400'
++                        : 'bg-slate-600 text-slate-400 hover:bg-slate-500'
+                     }`}
+                   >
+-                    <Clock size={18} />
++                    <Clock size={16} />
++                    <span className="hidden sm:inline">Tarde</span>
+                   </button>
+                 </div>
+               </div>
+             ))}
+           </div>
+ 
++          {mensaje && (
++            <div
++              className={`p-3 rounded-lg text-sm border ${
++                mensaje.tipo === 'ok'
++                  ? 'bg-green-900/20 border-green-700 text-green-400'
++                  : 'bg-red-900/20 border-red-700 text-red-400'
++              }`}
++            >
++              {mensaje.texto}
++            </div>
++          )}
++
+           <button
+             onClick={handleGuardar}
+             disabled={loading}
+diff --git a/frontend/src/components/Dashboard/Dashboard.jsx b/frontend/src/components/Dashboard/Dashboard.jsx
+index d785051..cdac9fb 100644
+--- a/frontend/src/components/Dashboard/Dashboard.jsx
++++ b/frontend/src/components/Dashboard/Dashboard.jsx
+@@ -1,7 +1,33 @@
+ import { useEffect, useState } from 'react';
+-import { Users, BookOpen, Clock, AlertCircle, TrendingUp, Calendar } from 'lucide-react';
++import { Link } from 'react-router-dom';
++import { Users, BookOpen, Clock, AlertCircle, TrendingUp, Calendar, Plus, ClipboardCheck } from 'lucide-react';
+ import api from '../../services/api';
+ 
++const COLORES = {
++  blue: { texto: 'text-blue-400', fondo: 'bg-blue-500/15' },
++  green: { texto: 'text-green-400', fondo: 'bg-green-500/15' },
++  amber: { texto: 'text-amber-400', fondo: 'bg-amber-500/15' },
++  red: { texto: 'text-red-400', fondo: 'bg-red-500/15' },
++};
++
++function Tarjeta({ icon: Icon, titulo, valor, subtitulo, color }) {
++  const c = COLORES[color];
++  return (
++    <div className="card hover:shadow-lg transition">
++      <div className="flex items-start justify-between gap-3">
++        <div className="min-w-0">
++          <p className="text-slate-400 text-sm mb-1">{titulo}</p>
++          <p className={`text-3xl font-bold ${c.texto}`}>{valor}</p>
++          <p className="text-slate-500 text-xs mt-1">{subtitulo}</p>
++        </div>
++        <div className={`p-3 rounded-lg shrink-0 ${c.fondo}`}>
++          <Icon className={c.texto} size={24} />
++        </div>
++      </div>
++    </div>
++  );
++}
++
+ export default function Dashboard() {
+   const [metricas, setMetricas] = useState({
+     participantesActivos: 0,
+@@ -38,21 +64,6 @@ export default function Dashboard() {
+     }
+   };
+ 
+-  const Tarjeta = ({ icon: Icon, titulo, valor, subtitulo, color }) => (
+-    <div className="card hover:shadow-lg transition">
+-      <div className="flex items-start justify-between">
+-        <div>
+-          <p className="text-slate-400 text-sm mb-1">{titulo}</p>
+-          <p className={`text-3xl font-bold ${color}`}>{valor}</p>
+-          <p className="text-slate-500 text-xs mt-1">{subtitulo}</p>
+-        </div>
+-        <div className={`p-3 rounded-lg ${color.replace('text', 'bg').replace('-600', '-900/20')}`}>
+-          <Icon className={`${color}`} size={24} />
+-        </div>
+-      </div>
+-    </div>
+-  );
+-
+   if (loading) {
+     return (
+       <div className="flex items-center justify-center h-full">
+@@ -68,7 +79,7 @@ export default function Dashboard() {
+     <div className="space-y-6">
+       {/* Título */}
+       <div>
+-        <h1 className="text-3xl font-bold text-white mb-2">Panel de Control</h1>
++        <h1 className="text-3xl font-bold text-white">Panel de Control</h1>
+         <p className="text-slate-400">Resumen general del sistema</p>
+       </div>
+ 
+@@ -79,28 +90,28 @@ export default function Dashboard() {
+           titulo="Participantes Activos"
+           valor={metricas.participantesActivos}
+           subtitulo="En el sistema"
+-          color="text-blue-500"
++          color="blue"
+         />
+         <Tarjeta
+           icon={BookOpen}
+           titulo="Grupos Activos"
+           valor={metricas.gruposActivos}
+           subtitulo="Talleres en ejecución"
+-          color="text-green-500"
++          color="green"
+         />
+         <Tarjeta
+           icon={Clock}
+           titulo="Asistencia Hoy"
+           valor={`${metricas.asistenciaHoy}%`}
+           subtitulo="Promedio de asistencia"
+-          color="text-amber-500"
++          color="amber"
+         />
+         <Tarjeta
+           icon={AlertCircle}
+           titulo="Alertas Activas"
+           valor={metricas.alertasActivas}
+           subtitulo="Requieren atención"
+-          color="text-red-500"
++          color="red"
+         />
+       </div>
+ 
+@@ -113,15 +124,15 @@ export default function Dashboard() {
+             Acciones Rápidas
+           </h3>
+           <div className="space-y-2">
+-            <button className="w-full btn-primary text-left">
+-              + Registrar Participante
+-            </button>
+-            <button className="w-full btn-primary text-left">
+-              + Crear Grupo
+-            </button>
+-            <button className="w-full btn-primary text-left">
+-              📝 Tomar Asistencia
+-            </button>
++            <Link to="/participantes" className="btn-primary flex items-center gap-2 w-full">
++              <Plus size={18} /> Registrar Participante
++            </Link>
++            <Link to="/grupos" className="btn-primary flex items-center gap-2 w-full">
++              <Plus size={18} /> Crear Grupo
++            </Link>
++            <Link to="/asistencia" className="btn-primary flex items-center gap-2 w-full">
++              <ClipboardCheck size={18} /> Tomar Asistencia
++            </Link>
+           </div>
+         </div>
+ 
+@@ -134,10 +145,10 @@ export default function Dashboard() {
+           {metricas.alertasActivas > 0 ? (
+             <div className="space-y-2 text-sm">
+               <div className="p-2 bg-red-900/20 border border-red-700 rounded text-red-400">
+-                ⚠️ 3 inasistencias consecutivas - Carlos García
++                3 inasistencias consecutivas - Carlos García
+               </div>
+               <div className="p-2 bg-amber-900/20 border border-amber-700 rounded text-amber-400">
+-                🟡 2 inasistencias consecutivas - María López
++                2 inasistencias consecutivas - María López
+               </div>
+             </div>
+           ) : (
+@@ -149,7 +160,7 @@ export default function Dashboard() {
+       {/* Información adicional */}
+       <div className="card bg-slate-700/50">
+         <div className="flex items-start gap-3">
+-          <Calendar className="text-blue-500 flex-shrink-0 mt-1" />
++          <Calendar className="text-blue-400 shrink-0 mt-1" />
+           <div>
+             <h4 className="font-bold text-white">Próximas jornadas</h4>
+             <p className="text-slate-400 text-sm mt-1">
+diff --git a/frontend/src/components/Grupos/GruposList.jsx b/frontend/src/components/Grupos/GruposList.jsx
+index 05ea194..e868ea7 100644
+--- a/frontend/src/components/Grupos/GruposList.jsx
++++ b/frontend/src/components/Grupos/GruposList.jsx
+@@ -1,5 +1,5 @@
+ import { useEffect, useState } from 'react';
+-import { Plus, Edit2, Trash2, Users } from 'lucide-react';
++import { Plus, Users, Calendar } from 'lucide-react';
+ import api from '../../services/api';
+ 
+ export default function GruposList() {
+@@ -22,7 +22,11 @@ export default function GruposList() {
+   };
+ 
+   if (loading) {
+-    return <div className="text-white">Cargando grupos...</div>;
++    return (
++      <div className="flex items-center justify-center h-full">
++        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
++      </div>
++    );
+   }
+ 
+   return (
+@@ -44,7 +48,10 @@ export default function GruposList() {
+             <h3 className="text-lg font-bold text-white mb-2">{grupo.nombre}</h3>
+             <p className="text-slate-400 text-sm mb-3">{grupo.descripcion}</p>
+             <div className="space-y-1 text-xs text-slate-400 mb-4">
+-              <p>📅 {grupo.dia_semana} - {grupo.horario}</p>
++              <p className="flex items-center gap-1">
++                <Calendar size={16} />
++                {grupo.dia_semana} - {grupo.horario}
++              </p>
+               <p className="flex items-center gap-1">
+                 <Users size={16} />
+                 {grupo.cantidad_participantes} participantes
+diff --git a/frontend/src/components/Layout/MainLayout.jsx b/frontend/src/components/Layout/MainLayout.jsx
+index 1fb83f7..1a8fe4d 100644
+--- a/frontend/src/components/Layout/MainLayout.jsx
++++ b/frontend/src/components/Layout/MainLayout.jsx
+@@ -1,8 +1,8 @@
+ import { useContext, useState } from 'react';
+-import { Link, useNavigate } from 'react-router-dom';
++import { NavLink, useNavigate } from 'react-router-dom';
+ import { AuthContext } from '../../context/AuthContext';
+ import {
+-  Menu, X, LogOut, BarChart3, Users, BookOpen, 
++  Menu, X, LogOut, Users, BookOpen,
+   Clock, AlertCircle, Settings, Home
+ } from 'lucide-react';
+ 
+@@ -32,72 +32,89 @@ export default function MainLayout({ children }) {
+     <div className="flex h-screen bg-slate-900">
+       {/* SIDEBAR */}
+       <aside
+-        className={`bg-slate-800 border-r border-slate-700 transition-all duration-300 ${
++        className={`flex flex-col shrink-0 bg-slate-800 border-r border-slate-700 transition-all duration-300 ${
+           sidebarOpen ? 'w-64' : 'w-20'
+         }`}
+       >
+         {/* Header del sidebar */}
+-        <div className="flex items-center justify-between p-4 border-b border-slate-700">
++        <div
++          className={`flex items-center p-4 h-16 border-b border-slate-700 ${
++            sidebarOpen ? 'justify-between' : 'justify-center'
++          }`}
++        >
+           {sidebarOpen && (
+             <h1 className="text-xl font-bold text-blue-400">Presente+</h1>
+           )}
+           <button
+             onClick={() => setSidebarOpen(!sidebarOpen)}
+-            className="p-1 hover:bg-slate-700 rounded-lg text-slate-400"
++            className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 transition"
++            aria-label={sidebarOpen ? 'Cerrar menú' : 'Abrir menú'}
+           >
+             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+           </button>
+         </div>
+ 
+         {/* Menú */}
+-        <nav className="p-4 space-y-2">
++        <nav className="flex-1 overflow-y-auto p-3 space-y-1">
+           {itemsVisibles.map(item => {
+             const Icon = item.icon;
+             return (
+-              <Link
++              <NavLink
+                 key={item.href}
+                 to={item.href}
+-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-700 transition"
++                title={item.label}
++                className={({ isActive }) =>
++                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition ${
++                    sidebarOpen ? '' : 'justify-center'
++                  } ${
++                    isActive
++                      ? 'bg-blue-600/20 text-blue-400 font-medium'
++                      : 'text-slate-300 hover:bg-slate-700'
++                  }`
++                }
+               >
+-                <Icon size={20} className="flex-shrink-0" />
++                <Icon size={20} className="shrink-0" />
+                 {sidebarOpen && <span>{item.label}</span>}
+-              </Link>
++              </NavLink>
+             );
+           })}
+         </nav>
+ 
+         {/* Footer del sidebar */}
+-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-700 space-y-2">
++        <div className="p-3 border-t border-slate-700 space-y-2">
+           {sidebarOpen && (
+             <div className="px-3 py-2 text-xs">
+               <p className="text-slate-400">Conectado como:</p>
+               <p className="text-white font-medium truncate">{usuario?.nombre}</p>
+-              <p className="text-blue-400 text-xs">{rol}</p>
++              <p className="text-blue-400">{rol}</p>
+             </div>
+           )}
+           <button
+             onClick={handleLogout}
+-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-red-400 hover:bg-red-900/20 transition"
++            title="Cerrar sesión"
++            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-900/20 transition ${
++              sidebarOpen ? '' : 'justify-center'
++            }`}
+           >
+-            <LogOut size={20} />
++            <LogOut size={20} className="shrink-0" />
+             {sidebarOpen && <span>Cerrar sesión</span>}
+           </button>
+         </div>
+       </aside>
+ 
+       {/* MAIN CONTENT */}
+-      <div className="flex-1 flex flex-col overflow-hidden">
++      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+         {/* HEADER */}
+-        <header className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
+-          <div>
+-            <h2 className="text-2xl font-bold text-white">Dashboard</h2>
+-            <p className="text-slate-400 text-sm">Bienvenido, {usuario?.nombre}</p>
+-          </div>
+-          <div className="flex items-center gap-4">
+-            <button className="p-2 hover:bg-slate-700 rounded-lg text-slate-400">
+-              <Settings size={20} />
+-            </button>
+-          </div>
++        <header className="h-16 bg-slate-800 border-b border-slate-700 px-6 flex items-center justify-between">
++          <p className="text-slate-400 text-sm">
++            Bienvenido, <span className="text-white font-medium">{usuario?.nombre}</span>
++          </p>
++          <button
++            className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 transition"
++            aria-label="Configuración"
++          >
++            <Settings size={20} />
++          </button>
+         </header>
+ 
+         {/* CONTENIDO */}
+@@ -107,4 +124,4 @@ export default function MainLayout({ children }) {
+       </div>
+     </div>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/frontend/src/components/Participantes/ParticipantesList.jsx b/frontend/src/components/Participantes/ParticipantesList.jsx
+index b7dc7f3..fed5cb6 100644
+--- a/frontend/src/components/Participantes/ParticipantesList.jsx
++++ b/frontend/src/components/Participantes/ParticipantesList.jsx
+@@ -72,14 +72,6 @@ export default function ParticipantesList() {
+     }
+   };
+ 
+-  if (loading) {
+-    return (
+-      <div className="flex items-center justify-center h-full">
+-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+-      </div>
+-    );
+-  }
+-
+   return (
+     <div className="space-y-6">
+       {/* Encabezado */}
+@@ -107,13 +99,13 @@ export default function ParticipantesList() {
+ 
+       {/* Filtros */}
+       <div className="card space-y-4">
+-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
++        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+           {/* Búsqueda */}
+           <div className="relative">
+-            <Search className="absolute left-3 top-3 text-slate-400" size={20} />
++            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+             <input
+               type="text"
+-              placeholder="Buscar por nombre o DNI..."
++              placeholder="Buscar por nombre..."
+               value={busqueda}
+               onChange={(e) => setBusqueda(e.target.value)}
+               className="input-base pl-10"
+@@ -147,7 +139,15 @@ export default function ParticipantesList() {
+             </tr>
+           </thead>
+           <tbody>
+-            {participantes.length === 0 ? (
++            {loading ? (
++              <tr>
++                <td colSpan="5" className="py-8">
++                  <div className="flex justify-center">
++                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
++                  </div>
++                </td>
++              </tr>
++            ) : participantes.length === 0 ? (
+               <tr>
+                 <td colSpan="5" className="text-center py-8 text-slate-400">
+                   No hay participantes para mostrar
+@@ -157,10 +157,7 @@ export default function ParticipantesList() {
+               participantes.map(p => (
+                 <tr key={p.id} className="border-b border-slate-700 hover:bg-slate-700/50">
+                   <td className="px-4 py-3">
+-                    <div>
+-                      <p className="font-medium text-white">{p.nombre} {p.apellido}</p>
+-                      <p className="text-xs text-slate-400">{p.dni}</p>
+-                    </div>
++                    <p className="font-medium text-white">{p.nombre} {p.apellido}</p>
+                   </td>
+                   <td className="px-4 py-3 text-slate-300">{p.dni}</td>
+                   <td className="px-4 py-3">
+@@ -190,7 +187,8 @@ export default function ParticipantesList() {
+                       <span className="text-slate-500">Sin grupos</span>
+                     )}
+                   </td>
+-                  <td className="px-4 py-3 text-right space-x-2 flex justify-end">
++                  <td className="px-4 py-3">
++                    <div className="flex justify-end gap-1">
+                     <button
+                       className="p-2 hover:bg-slate-600 rounded text-blue-400"
+                       title="Ver detalles"
+@@ -210,6 +208,7 @@ export default function ParticipantesList() {
+                     >
+                       <Trash2 size={18} />
+                     </button>
++                    </div>
+                   </td>
+                 </tr>
+               ))
+diff --git a/frontend/src/index.css b/frontend/src/index.css
+index c672f3e..949f2be 100644
+--- a/frontend/src/index.css
++++ b/frontend/src/index.css
+@@ -13,13 +13,7 @@
+   --color-alerta-600: #d97706;
+ }
+ 
+-/* 2. Reset básico */
+-* {
+-  margin: 0;
+-  padding: 0;
+-  box-sizing: border-box;
+-}
+-
++/* 2. Estilos base (Tailwind ya incluye su propio reset, no hace falta otro) */
+ body {
+   @apply bg-slate-900 text-white;
+ }
+@@ -39,7 +33,7 @@ body {
+   }
+ 
+   .input-base {
+-    @apply w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-white;
++    @apply w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-white placeholder:text-slate-500;
+   }
+ 
+   .card {
+-- 
+2.43.0
+
