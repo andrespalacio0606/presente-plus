@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Edit2, Trash2, Users } from 'lucide-react';
+import { Plus, Users, Calendar } from 'lucide-react';
 import api from '../../services/api';
 
 export default function GruposList() {
@@ -22,7 +22,11 @@ export default function GruposList() {
   };
 
   if (loading) {
-    return <div className="text-white">Cargando grupos...</div>;
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
   return (
@@ -44,7 +48,10 @@ export default function GruposList() {
             <h3 className="text-lg font-bold text-white mb-2">{grupo.nombre}</h3>
             <p className="text-slate-400 text-sm mb-3">{grupo.descripcion}</p>
             <div className="space-y-1 text-xs text-slate-400 mb-4">
-              <p>📅 {grupo.dia_semana} - {grupo.horario}</p>
+              <p className="flex items-center gap-1">
+                <Calendar size={16} />
+                {grupo.dia_semana} - {grupo.horario}
+              </p>
               <p className="flex items-center gap-1">
                 <Users size={16} />
                 {grupo.cantidad_participantes} participantes

@@ -13,13 +13,7 @@
   --color-alerta-600: #d97706;
 }
 
-/* 2. Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+/* 2. Estilos base (Tailwind ya incluye su propio reset, no hace falta otro) */
 body {
   @apply bg-slate-900 text-white;
 }
@@ -39,7 +33,7 @@ body {
   }
 
   .input-base {
-    @apply w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-white;
+    @apply w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-white placeholder:text-slate-500;
   }
 
   .card {

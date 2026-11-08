@@ -8,6 +8,7 @@ export default function TomarAsistencia() {
   const [participantes, setParticipantes] = useState([]);
   const [asistencias, setAsistencias] = useState({});
   const [loading, setLoading] = useState(false);
+  const [mensaje, setMensaje] = useState(null);
 
   const cargarGrupos = async () => {
     try {
@@ -36,6 +37,7 @@ export default function TomarAsistencia() {
   const handleGuardar = async () => {
     try {
       setLoading(true);
+      setMensaje(null);
       const asistenciasArray = Object.entries(asistencias).map(([participanteId, estado]) => ({
         participante_id: parseInt(participanteId),
         estado
@@ -47,9 +49,9 @@ export default function TomarAsistencia() {
         asistencias: asistenciasArray
       });
 
-      alert('Asistencias guardadas exitosamente');
+      setMensaje({ tipo: 'ok', texto: 'Asistencias guardadas exitosamente' });
     } catch (err) {
-      alert('Error al guardar asistencias');
+      setMensaje({ tipo: 'error', texto: 'Error al guardar asistencias' });
       console.error(err);
     } finally {
       setLoading(false);
@@ -95,8 +97,15 @@ export default function TomarAsistencia() {
 
       {grupoSeleccionado && participantes.length > 0 && (
         <div className="card space-y-4">
-          <h3 className="text-lg font-bold text-white mb-4">
-            Participantes - {participantes.length} presentes
+          <h3 className="text-lg font-bold text-white">
+            Participantes
+            <span className="text-slate-400 font-normal text-sm ml-2">
+              {Object.values(asistencias).filter(e => e === 'Presente').length} presentes
+              {' · '}
+              {Object.values(asistencias).filter(e => e === 'Ausente').length} ausentes
+              {' · '}
+              {Object.values(asistencias).filter(e => e === 'Tarde').length} tarde
+            </span>
           </h3>
 
           <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -106,38 +115,53 @@ export default function TomarAsistencia() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setAsistencias({ ...asistencias, [p.id]: 'Presente' })}
-                    className={`p-2 rounded ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm transition ${
                       asistencias[p.id] === 'Presente'
                         ? 'bg-green-900/50 text-green-400'
-                        : 'bg-slate-600 text-slate-400'
+                        : 'bg-slate-600 text-slate-400 hover:bg-slate-500'
                     }`}
                   >
-                    <CheckCircle size={18} />
+                    <CheckCircle size={16} />
+                    <span className="hidden sm:inline">Presente</span>
                   </button>
                   <button
                     onClick={() => setAsistencias({ ...asistencias, [p.id]: 'Ausente' })}
-                    className={`p-2 rounded ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm transition ${
                       asistencias[p.id] === 'Ausente'
                         ? 'bg-red-900/50 text-red-400'
-                        : 'bg-slate-600 text-slate-400'
+                        : 'bg-slate-600 text-slate-400 hover:bg-slate-500'
                     }`}
                   >
-                    <XCircle size={18} />
+                    <XCircle size={16} />
+                    <span className="hidden sm:inline">Ausente</span>
                   </button>
                   <button
                     onClick={() => setAsistencias({ ...asistencias, [p.id]: 'Tarde' })}
-                    className={`p-2 rounded ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm transition ${
                       asistencias[p.id] === 'Tarde'
                         ? 'bg-amber-900/50 text-amber-400'
-                        : 'bg-slate-600 text-slate-400'
+                        : 'bg-slate-600 text-slate-400 hover:bg-slate-500'
                     }`}
                   >
-                    <Clock size={18} />
+                    <Clock size={16} />
+                    <span className="hidden sm:inline">Tarde</span>
                   </button>
                 </div>
               </div>
             ))}
           </div>
+
+          {mensaje && (
+            <div
+              className={`p-3 rounded-lg text-sm border ${
+                mensaje.tipo === 'ok'
+                  ? 'bg-green-900/20 border-green-700 text-green-400'
+                  : 'bg-red-900/20 border-red-700 text-red-400'
+              }`}
+            >
+              {mensaje.texto}
+            </div>
+          )}
 
           <button
             onClick={handleGuardar}
